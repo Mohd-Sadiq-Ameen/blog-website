@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Latest football news and transfer updates" />
+    <meta name="keywords" content="Football, Soccer, News, Goal, Premier League, Transfer" />
+    <meta name="author" content="GoalZone" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>GoalZone | Football News</title>
+</head>
+
+<body>
+    <header>
+        <h1>⚽ GoalZone</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#latest">Latest News</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="latest">
+            <h2>Latest Football News</h2>
+            <div id="posts" class="posts-container"></div>
+            <a href="/editor.html">
+                <button style="margin: 2rem auto; display: block; padding: 1rem 2rem;">➕ Create New Blog</button>
+            </a>
+
+            <button onclick="localStorage.removeItem('userBlogs'); location.reload();">
+                🧹 Clear User Blogs (for testing)
+            </button>
+
+        </section>
+    </main>
+
+    <footer id="contact">
+        <p>© 2025 GoalZone. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

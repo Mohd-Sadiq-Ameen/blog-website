@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoalZone Blog Editor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+    header {
+      background-color: #1a1a2e;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    #toolbar {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      background: #eee;
+    }
+    #blog-container {
+      padding: 1rem;
+      min-height: 500px;
+      border: 2px dashed #ccc;
+      margin: 1rem;
+      background: white;
+      position: relative;
+    }
+    .block {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #aaa;
+      padding: 1rem;
+      cursor: grab;
+      max-width: 300px;
+    }
+    .block img {
+      max-width: 100%;
+    }
+    input, textarea {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    #submit-container {
+      padding: 1rem;
+      text-align: center;
+    }
+    #submit-container input[type="text"] {
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GoalZone - Blog Creator</h1>
+  </header>
+  <div id="toolbar">
+    <button onclick="addBlock('paragraph')">Add Paragraph</button>
+    <button onclick="addBlock('image')">Add Image</button>
+  </div>
+  <div id="submit-container">
+    <input type="text" id="blog-title" placeholder="Enter Blog Title" />
+    <button onclick="submitBlog()">Submit Blog</button>
+  </div>
+  <div id="blog-container"></div>
+
+  <script>
+    let blockCount = 0;
+    let draggingBlock = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function addBlock(type) {
+      const block = document.createElement('div');
+      block.className = 'block';
+      block.style.top = `${50 + blockCount * 10}px`;
+      block.style.left = `${50 + blockCount * 10}px`;
+      blockCount++;
+
+      if (type === 'paragraph') {
+        const textarea = document.createElement('textarea');
+        textarea.rows = 4;
+        textarea.placeholder = 'Write your paragraph...';
+        block.appendChild(textarea);
+      } else if (type === 'image') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Paste image URL...';
+        input.onchange = () => {
+          const img = document.createElement('img');
+          img.src = input.value;
+          block.innerHTML = '';
+          block.appendChild(img);
+        }
+        block.appendChild(input);
+      }
+
+      block.addEventListener('mousedown', (e) => {
+        draggingBlock = block;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
+
+      document.addEventListener('mouseup', () => draggingBlock = null);
+      document.addEventListener('mousemove', (e) => {
+        if (draggingBlock) {
+          const container = document.getElementById('blog-container');
+          const rect = container.getBoundingClientRect();
+          draggingBlock.style.top = `${e.clientY - rect.top - offsetY}px`;
+          draggingBlock.style.left = `${e.clientX - rect.left - offsetX}px`;
+        }
+      });
+
+      document.getElementById('blog-container').appendChild(block);
+    }
+
+ function submitBlog() {
+  const title = document.getElementById('blog-title').value;
+  const blocks = document.querySelectorAll('.block');
+  const content = [];
+
+  blocks.forEach(block => {
+    const textarea = block.querySelector('textarea');
+    const img = block.querySelector('img');
+
+    if (textarea) {
+      content.push({ type: 'paragraph', text: textarea.value });
+    } else if (img) {
+      content.push({ type: 'image', src: img.src });
+    }
+  });
+
+  const blog = {
+    title,
+    content,
+    date: new Date().toISOString()
+  };
+
+  // Save to localStorage
+  const existing = JSON.parse(localStorage.getItem('userBlogs') || '[]');
+  existing.push(blog);
+  localStorage.setItem('userBlogs', JSON.stringify(existing));
+
+  alert('Blog submitted! It will now show up on homepage.');
+  window.location.href = '/index.html';
+}
+
+
+  </script>
+</body>
+</html>
